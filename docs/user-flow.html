@@ -1,0 +1,1052 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Crema — User Flow Map</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    /* ── Design tokens (mirror frontend/src/index.css) ── */
+    :root {
+      --bg-page: rgb(242 237 227);
+      --bg-card: rgb(255 255 255);
+      --bg-elevated: rgb(238 233 223);
+      --bg-divider: rgb(225 219 208);
+      --ink-primary: rgb(38 38 36);
+      --ink-secondary: rgb(100 97 90);
+      --ink-tertiary: rgb(116 113 106);
+      --accent: rgb(163 100 62);
+      --accent-soft: rgb(253 247 240);
+      --cta: rgb(180 83 9);
+      --success: rgb(56 142 96);
+      --success-soft: rgb(240 250 244);
+      --danger: rgb(220 38 38);
+      --danger-soft: rgb(254 242 242);
+
+      --font-body: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+      --font-heading: 'Instrument Serif', serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-page);
+      color: var(--ink-primary);
+      letter-spacing: -0.011em;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      line-height: 1.55;
+    }
+
+    /* ── Layout ── */
+    .shell {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 64px 32px 96px;
+    }
+    section + section { margin-top: 72px; }
+
+    /* ── Typography ── */
+    h1 { font-family: var(--font-heading); font-weight: 400; font-size: clamp(3.5rem, 7vw, 5.5rem); line-height: 0.95; letter-spacing: -0.02em; color: var(--accent); margin: 0 0 16px; }
+    h2 { font-family: var(--font-heading); font-weight: 400; font-size: 2rem; line-height: 1.1; letter-spacing: -0.015em; margin: 0 0 8px; color: var(--ink-primary); }
+    h3 { font-family: var(--font-heading); font-weight: 400; font-size: 1.25rem; line-height: 1.2; margin: 0 0 4px; color: var(--ink-primary); }
+    .eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-tertiary); margin: 0 0 12px; }
+    .lede { color: var(--ink-secondary); font-size: 1.0625rem; max-width: 620px; }
+    .small { font-size: 0.8125rem; color: var(--ink-tertiary); }
+    .mono { font-family: var(--font-mono); }
+    code, .code { font-family: var(--font-mono); font-size: 0.8125rem; background: var(--bg-elevated); padding: 1px 6px; border-radius: 4px; color: var(--ink-primary); }
+
+    /* ── Card ── */
+    .card {
+      background: linear-gradient(180deg, rgb(255 253 249), rgb(250 247 240));
+      border: 1px solid rgb(225 219 208 / 0.6);
+      border-radius: 18px;
+      padding: 24px 28px;
+      box-shadow:
+        0 0 0 1px rgba(38, 38, 36, 0.04),
+        0 1px 2px rgba(38, 38, 36, 0.04),
+        0 2px 8px rgba(38, 38, 36, 0.03);
+    }
+    .card-lifted {
+      box-shadow:
+        0 0 0 1px rgba(38, 38, 36, 0.04),
+        0 2px 4px rgba(38, 38, 36, 0.04),
+        0 8px 24px rgba(38, 38, 36, 0.06);
+    }
+
+    /* ── Sitemap SVG container ── */
+    .sitemap-wrap {
+      background: linear-gradient(180deg, rgb(252 250 245), rgb(246 242 234));
+      border: 1px solid rgb(225 219 208 / 0.6);
+      border-radius: 22px;
+      padding: 28px;
+      box-shadow:
+        0 0 0 1px rgba(38, 38, 36, 0.04),
+        0 2px 4px rgba(38, 38, 36, 0.04),
+        0 8px 24px rgba(38, 38, 36, 0.06);
+      overflow-x: auto;
+    }
+    .sitemap-svg { width: 100%; height: auto; min-width: 880px; display: block; }
+
+    /* SVG element styles via CSS classes */
+    .node-rect { fill: rgb(255 255 255); stroke: rgb(225 219 208); stroke-width: 1; }
+    .node-rect.app { fill: rgb(253 247 240); stroke: rgb(163 100 62 / 0.35); }
+    .node-rect.modal { fill: rgb(255 255 255); stroke: rgb(225 219 208); stroke-dasharray: 4 3; }
+    .node-rect.cluster { fill: rgb(238 233 223 / 0.35); stroke: rgb(225 219 208); stroke-dasharray: 0; }
+    .node-title { font-family: var(--font-heading); font-size: 16px; fill: rgb(38 38 36); }
+    .node-route { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.05em; fill: rgb(116 113 106); text-transform: uppercase; }
+    .node-sub { font-family: var(--font-body); font-size: 11px; fill: rgb(100 97 90); }
+    .cluster-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; fill: rgb(116 113 106); text-transform: uppercase; }
+    .edge { fill: none; stroke: rgb(116 113 106 / 0.55); stroke-width: 1.25; }
+    .edge.bidi { stroke: rgb(163 100 62 / 0.6); }
+    .edge.modal-link { stroke-dasharray: 3 3; stroke: rgb(116 113 106 / 0.4); }
+    .edge-label { font-family: var(--font-mono); font-size: 9px; fill: rgb(116 113 106); letter-spacing: 0.05em; }
+
+    /* ── Journey cards ── */
+    .journey {
+      background: linear-gradient(180deg, rgb(255 253 249), rgb(250 247 240));
+      border: 1px solid rgb(225 219 208 / 0.6);
+      border-radius: 18px;
+      padding: 24px 28px;
+      box-shadow:
+        0 0 0 1px rgba(38, 38, 36, 0.04),
+        0 1px 2px rgba(38, 38, 36, 0.04),
+        0 2px 8px rgba(38, 38, 36, 0.03);
+    }
+    .journey + .journey { margin-top: 20px; }
+    .journey-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 18px; flex-wrap: wrap; }
+    .journey-head .meta { display: flex; gap: 10px; align-items: center; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; color: var(--ink-tertiary); text-transform: uppercase; }
+    .journey-head .meta .chip { background: var(--bg-elevated); padding: 3px 8px; border-radius: 4px; }
+    .journey-head .meta .chip.dev { background: rgb(253 247 240); color: rgb(163 100 62); border: 1px solid rgb(163 100 62 / 0.25); }
+    .journey-desc { color: var(--ink-secondary); font-size: 0.9375rem; margin: 0 0 18px; max-width: 720px; }
+
+    .steps {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 14px;
+      align-items: stretch;
+      overflow-x: auto;
+      padding: 4px 2px 12px;
+      scrollbar-width: thin;
+    }
+    .step {
+      flex: 0 0 200px;
+      border: 1px solid rgb(225 219 208);
+      background: var(--bg-card);
+      border-radius: 14px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      position: relative;
+    }
+    .step .n {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      color: var(--ink-tertiary);
+      text-transform: uppercase;
+    }
+    .step .page {
+      font-family: var(--font-heading);
+      font-size: 1.0625rem;
+      line-height: 1.2;
+      color: var(--ink-primary);
+    }
+    .step .route {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--accent);
+      letter-spacing: 0.05em;
+    }
+    .step .action {
+      font-size: 0.8125rem;
+      color: var(--ink-secondary);
+    }
+    .step + .step::before {
+      content: '→';
+      position: absolute;
+      left: -14px;
+      top: 50%;
+      transform: translate(-2px, -50%);
+      color: var(--ink-tertiary);
+      font-size: 16px;
+      line-height: 1;
+      width: 14px;
+      text-align: center;
+    }
+    /* Step variants per page */
+    .step.dashboard { border-left: 3px solid rgb(163 100 62 / 0.5); }
+    .step.orders    { border-left: 3px solid rgb(56 142 96 / 0.55); }
+    .step.products  { border-left: 3px solid rgb(180 83 9 / 0.55); }
+    .step.inventory { border-left: 3px solid rgb(220 38 38 / 0.45); }
+    .step.expenses  { border-left: 3px solid rgb(180 83 9 / 0.55); }
+    .step.reports   { border-left: 3px solid rgb(116 113 106 / 0.55); }
+    .step.auth      { border-left: 3px solid rgb(225 219 208); }
+    .step.modal     { border-left: 3px dashed rgb(225 219 208); background: rgb(252 250 245); }
+
+    /* ── Page anatomy table ── */
+    .anatomy {
+      background: linear-gradient(180deg, rgb(255 253 249), rgb(250 247 240));
+      border: 1px solid rgb(225 219 208 / 0.6);
+      border-radius: 18px;
+      padding: 8px 4px;
+      box-shadow:
+        0 0 0 1px rgba(38, 38, 36, 0.04),
+        0 1px 2px rgba(38, 38, 36, 0.04),
+        0 2px 8px rgba(38, 38, 36, 0.03);
+      overflow-x: auto;
+    }
+    .anatomy table { width: 100%; border-collapse: collapse; font-size: 0.875rem; min-width: 820px; }
+    .anatomy th {
+      text-align: left;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      color: var(--ink-tertiary);
+      text-transform: uppercase;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--bg-divider);
+      font-weight: 500;
+    }
+    .anatomy td {
+      padding: 14px 20px;
+      border-bottom: 1px solid rgb(225 219 208 / 0.45);
+      vertical-align: top;
+      color: var(--ink-secondary);
+    }
+    .anatomy tr:last-child td { border-bottom: 0; }
+    .anatomy td:first-child { color: var(--ink-primary); font-weight: 500; }
+    .anatomy td.route { font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent); }
+
+    /* ── Tokens reference ── */
+    .tokens-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 14px;
+    }
+    .swatch {
+      background: var(--bg-card);
+      border: 1px solid rgb(225 219 208);
+      border-radius: 12px;
+      padding: 0;
+      overflow: hidden;
+    }
+    .swatch .chip {
+      height: 64px;
+      width: 100%;
+      display: block;
+    }
+    .swatch .info {
+      padding: 10px 14px 14px;
+    }
+    .swatch .name {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-tertiary);
+    }
+    .swatch .hex {
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      color: var(--ink-primary);
+      margin-top: 2px;
+    }
+    .swatch .note {
+      font-size: 0.75rem;
+      color: var(--ink-secondary);
+      margin-top: 4px;
+    }
+    .type-samples {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+    }
+    .type-sample {
+      background: var(--bg-card);
+      border: 1px solid rgb(225 219 208);
+      border-radius: 12px;
+      padding: 16px 18px;
+    }
+    .type-sample .label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-tertiary); margin-bottom: 6px; }
+    .type-sample .show { color: var(--ink-primary); }
+
+    /* ── Two-col helper for "what's where" footer ── */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+    @media (max-width: 720px) { .two-col { grid-template-columns: 1fr; } }
+
+    /* ── Legend ── */
+    .legend {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+      font-size: 0.75rem;
+      color: var(--ink-tertiary);
+    }
+    .legend .item { display: inline-flex; align-items: center; gap: 6px; }
+    .legend .dot { width: 14px; height: 6px; border-radius: 3px; display: inline-block; }
+    .legend .dash {
+      width: 22px;
+      height: 0;
+      border-top: 1.5px dashed rgb(116 113 106 / 0.5);
+      display: inline-block;
+    }
+    .legend .arrow { width: 18px; text-align: center; color: rgb(163 100 62 / 0.7); }
+
+    footer { margin-top: 96px; color: var(--ink-tertiary); font-size: 0.75rem; text-align: center; }
+    footer .mono { font-family: var(--font-mono); letter-spacing: 0.05em; }
+  </style>
+</head>
+<body>
+  <div class="shell">
+
+    <!-- ─────────────────── Hero ─────────────────── -->
+    <header>
+      <p class="eyebrow">User flow map · v1</p>
+      <h1>Crema</h1>
+      <p class="lede">
+        How operators move through the app. A site map of routes and modals, six named
+        journeys with step-by-step paths, an anatomy table per page, and the design
+        tokens that hold it all together.
+      </p>
+    </header>
+
+    <!-- ─────────────────── Sitemap ─────────────────── -->
+    <section>
+      <p class="eyebrow">Site map</p>
+      <h2>Routes &amp; modal surfaces</h2>
+      <p class="lede" style="margin-bottom: 24px;">
+        Two clusters: the cosmetic <em>landing</em> at <code>/</code> and <code>/register</code>,
+        and the operational <em>app</em> at <code>/app/*</code>. Within the app, the
+        five routes cycle via sidebar links or the <code>← →</code> / <code>A D</code>
+        keyboard shortcuts. Modal surfaces are drawn dashed and attached to their host
+        route.
+      </p>
+
+      <div class="sitemap-wrap">
+        <svg class="sitemap-svg" viewBox="0 0 1120 620" xmlns="http://www.w3.org/2000/svg">
+          <!-- Cluster: Landing -->
+          <rect class="node-rect cluster" x="20" y="40" width="220" height="220" rx="14" />
+          <text class="cluster-label" x="36" y="62">Landing · cosmetic</text>
+
+          <!-- /  (LoginPage) -->
+          <rect class="node-rect" x="44" y="84" width="172" height="64" rx="10" />
+          <text class="node-route" x="58" y="106">/</text>
+          <text class="node-title" x="58" y="128">Sign in</text>
+          <text class="node-sub" x="58" y="142">email + password (cosmetic)</text>
+
+          <!-- /register -->
+          <rect class="node-rect" x="44" y="164" width="172" height="64" rx="10" />
+          <text class="node-route" x="58" y="186">/register</text>
+          <text class="node-title" x="58" y="208">Create account</text>
+          <text class="node-sub" x="58" y="222">show/hide password</text>
+
+          <!-- Cluster: App -->
+          <rect class="node-rect cluster" x="280" y="40" width="820" height="540" rx="14" />
+          <text class="cluster-label" x="296" y="62">App shell · sidebar nav + main panel</text>
+
+          <!-- Dashboard -->
+          <rect class="node-rect app" x="320" y="100" width="200" height="92" rx="12" />
+          <text class="node-route" x="336" y="124">/app</text>
+          <text class="node-title" x="336" y="148">Dashboard</text>
+          <text class="node-sub" x="336" y="166">Hero stat · KPIs · needs attention</text>
+
+          <!-- Orders -->
+          <rect class="node-rect app" x="560" y="100" width="200" height="92" rx="12" />
+          <text class="node-route" x="576" y="124">/app/orders</text>
+          <text class="node-title" x="576" y="148">Orders</text>
+          <text class="node-sub" x="576" y="166">Menu · cart · submit</text>
+
+          <!-- Products -->
+          <rect class="node-rect app" x="800" y="100" width="200" height="92" rx="12" />
+          <text class="node-route" x="816" y="124">/app/products</text>
+          <text class="node-title" x="816" y="148">Products</text>
+          <text class="node-sub" x="816" y="166">Recipes · inline price edit</text>
+
+          <!-- Inventory -->
+          <rect class="node-rect app" x="320" y="240" width="200" height="92" rx="12" />
+          <text class="node-route" x="336" y="264">/app/inventory</text>
+          <text class="node-title" x="336" y="288">Inventory</text>
+          <text class="node-sub" x="336" y="306">Stock auto-saves on blur</text>
+
+          <!-- Expenses -->
+          <rect class="node-rect app" x="560" y="240" width="200" height="92" rx="12" />
+          <text class="node-route" x="576" y="264">/app/expenses</text>
+          <text class="node-title" x="576" y="288">Expenses</text>
+          <text class="node-sub" x="576" y="306">Journal · fixed categories · no auto-carry</text>
+
+          <!-- Reports -->
+          <rect class="node-rect app" x="800" y="240" width="200" height="92" rx="12" />
+          <text class="node-route" x="816" y="264">/app/reports</text>
+          <text class="node-title" x="816" y="288">Reports</text>
+          <text class="node-sub" x="816" y="306">5 KPI cards · charts · export</text>
+
+          <!-- Bidi link Landing → App  (cosmetic sign-in) -->
+          <path class="edge bidi" d="M 220 120 C 260 120, 280 130, 320 140" />
+          <polygon points="316,135 322,140 316,145" fill="rgb(163 100 62 / 0.6)" />
+          <text class="edge-label" x="240" y="112">sign in</text>
+
+          <!-- Bidi link App → Landing (sign out) -->
+          <path class="edge bidi" d="M 320 162 C 280 162, 260 190, 220 196" />
+          <polygon points="226,193 220,196 226,200" fill="rgb(163 100 62 / 0.6)" />
+          <text class="edge-label" x="244" y="186">sign out</text>
+
+          <!-- App sidebar nav: bidirectional arrows between dashboard ⇄ orders ⇄ products -->
+          <line class="edge bidi" x1="520" y1="146" x2="560" y2="146" />
+          <polygon points="556,142 560,146 556,150" fill="rgb(163 100 62 / 0.6)" />
+          <polygon points="524,142 520,146 524,150" fill="rgb(163 100 62 / 0.6)" />
+
+          <line class="edge bidi" x1="760" y1="146" x2="800" y2="146" />
+          <polygon points="796,142 800,146 796,150" fill="rgb(163 100 62 / 0.6)" />
+          <polygon points="764,142 760,146 764,150" fill="rgb(163 100 62 / 0.6)" />
+
+          <line class="edge bidi" x1="520" y1="286" x2="560" y2="286" />
+          <polygon points="556,282 560,286 556,290" fill="rgb(163 100 62 / 0.6)" />
+          <polygon points="524,282 520,286 524,290" fill="rgb(163 100 62 / 0.6)" />
+
+          <line class="edge bidi" x1="760" y1="286" x2="800" y2="286" />
+          <polygon points="796,282 800,286 796,290" fill="rgb(163 100 62 / 0.6)" />
+          <polygon points="764,282 760,286 764,290" fill="rgb(163 100 62 / 0.6)" />
+
+          <!-- Vertical bidi between dashboard and inventory -->
+          <line class="edge bidi" x1="420" y1="192" x2="420" y2="240" />
+          <polygon points="416,236 420,240 424,236" fill="rgb(163 100 62 / 0.6)" />
+          <polygon points="416,196 420,192 424,196" fill="rgb(163 100 62 / 0.6)" />
+
+          <!-- Vertical bidi between orders and expenses -->
+          <line class="edge bidi" x1="660" y1="192" x2="660" y2="240" />
+          <polygon points="656,236 660,240 664,236" fill="rgb(163 100 62 / 0.6)" />
+          <polygon points="656,196 660,192 664,196" fill="rgb(163 100 62 / 0.6)" />
+
+          <!-- Vertical bidi between products and reports -->
+          <line class="edge bidi" x1="900" y1="192" x2="900" y2="240" />
+          <polygon points="896,236 900,240 904,236" fill="rgb(163 100 62 / 0.6)" />
+          <polygon points="896,196 900,192 904,196" fill="rgb(163 100 62 / 0.6)" />
+
+          <!-- Keyboard hint -->
+          <text class="edge-label" x="900" y="234">← →  /  A D  cycle routes</text>
+
+          <!-- Modals attached to Dashboard -->
+          <rect class="node-rect modal" x="320" y="380" width="200" height="38" rx="8" />
+          <text class="node-title" x="336" y="404" style="font-size:13px;">Restock modal</text>
+          <line class="edge modal-link" x1="420" y1="332" x2="420" y2="380" />
+
+          <rect class="node-rect modal" x="320" y="426" width="200" height="38" rx="8" />
+          <text class="node-title" x="336" y="450" style="font-size:13px;">Dev: Fill orders</text>
+          <line class="edge modal-link" x1="420" y1="464" x2="420" y2="478" />
+
+          <!-- Modals attached to Products (vertically stack below Reports, which now
+               occupies the (800, 240-332) slot that Products modals used to share with) -->
+          <rect class="node-rect modal" x="800" y="352" width="200" height="38" rx="8" />
+          <text class="node-title" x="816" y="376" style="font-size:13px;">Add product</text>
+
+          <rect class="node-rect modal" x="800" y="398" width="200" height="38" rx="8" />
+          <text class="node-title" x="816" y="422" style="font-size:13px;">Edit product</text>
+
+          <rect class="node-rect modal" x="800" y="444" width="200" height="38" rx="8" />
+          <text class="node-title" x="816" y="468" style="font-size:13px;">Delete confirm</text>
+
+          <rect class="node-rect modal" x="800" y="490" width="200" height="38" rx="8" />
+          <text class="node-title" x="816" y="514" style="font-size:13px;">Quick-add ingredient</text>
+
+          <line class="edge modal-link" x1="900" y1="332" x2="900" y2="528" />
+
+          <!-- Modal attached to Inventory -->
+          <rect class="node-rect modal" x="320" y="476" width="200" height="38" rx="8" />
+          <text class="node-title" x="336" y="500" style="font-size:13px;">Add ingredient</text>
+          <line class="edge modal-link" x1="420" y1="332" x2="420" y2="476" stroke="rgb(116 113 106 / 0.2)" stroke-dasharray="3 3" />
+
+          <!-- Order history (expand inside Orders, not a modal) — sits to the left of
+               Orders now that Expenses occupies the slot below Orders -->
+          <rect class="node-rect modal" x="560" y="200" width="200" height="34" rx="8" />
+          <text class="node-title" x="576" y="222" style="font-size:13px;">Order history (inline)</text>
+          <line class="edge modal-link" x1="660" y1="192" x2="660" y2="200" />
+
+          <!-- Tour overlay — dev-only, can spotlight any route -->
+          <rect class="node-rect modal" x="560" y="380" width="240" height="58" rx="8"
+                style="stroke: rgb(163 100 62 / 0.45); fill: rgb(253 247 240);" />
+          <text class="node-title" x="576" y="404" style="font-size:13px;">Guided tour (dev)</text>
+          <text class="node-sub" x="576" y="422">9 steps · overlays all routes</text>
+          <line class="edge modal-link" x1="660" y1="332" x2="660" y2="380" stroke="rgb(163 100 62 / 0.4)" />
+        </svg>
+
+        <div class="legend">
+          <span class="item"><span class="dot" style="background: rgb(255 255 255); border: 1px solid rgb(225 219 208);"></span> Route</span>
+          <span class="item"><span class="dot" style="background: rgb(253 247 240); border: 1px solid rgb(163 100 62 / 0.35);"></span> App route</span>
+          <span class="item"><span class="dash"></span> Modal surface</span>
+          <span class="item"><span class="arrow">⇄</span> Bi-directional nav</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────────────── Primary journeys ─────────────────── -->
+    <section>
+      <p class="eyebrow">Primary journeys</p>
+      <h2>Seven named paths through the app</h2>
+      <p class="lede" style="margin-bottom: 24px;">
+        Each journey is a horizontal sequence of step cards. The left edge color marks
+        which page the step takes place on; dashed cards are modals.
+      </p>
+
+      <!-- Journey 1: Cold start -->
+      <div class="journey">
+        <div class="journey-head">
+          <div>
+            <h3>1. Cold start — first-time shop owner</h3>
+            <p class="journey-desc">
+              Fresh database. The Dashboard reveals the Getting Started checklist, and
+              the operator works through three steps until their first sale lands.
+            </p>
+          </div>
+          <div class="meta"><span class="chip">~5 min</span><span class="chip">production-safe</span></div>
+        </div>
+        <div class="steps">
+          <div class="step auth">
+            <span class="n">Step 1</span>
+            <div class="page">Sign in</div>
+            <div class="route">/</div>
+            <div class="action">Enter any email + password (cosmetic). Click <strong>Sign in</strong>.</div>
+          </div>
+          <div class="step dashboard">
+            <span class="n">Step 2</span>
+            <div class="page">Dashboard</div>
+            <div class="route">/app</div>
+            <div class="action">Empty state. The <em>Getting started</em> 3-row checklist appears. Click <strong>Add ingredients</strong>.</div>
+          </div>
+          <div class="step inventory">
+            <span class="n">Step 3</span>
+            <div class="page">Inventory</div>
+            <div class="route">/app/inventory</div>
+            <div class="action">Click <strong>Add ingredient</strong>. Enter Coffee Beans / Milk / Cup (3 ingredients).</div>
+          </div>
+          <div class="step products">
+            <span class="n">Step 4</span>
+            <div class="page">Products</div>
+            <div class="route">/app/products</div>
+            <div class="action">Click <strong>Add product</strong>. Name + price + recipe rows. Repeat for Espresso, Latte, Cappuccino.</div>
+          </div>
+          <div class="step orders">
+            <span class="n">Step 5</span>
+            <div class="page">Orders</div>
+            <div class="route">/app/orders</div>
+            <div class="action">Click a menu card to activate, press <strong>Enter</strong> to add. Submit. Stock deducts.</div>
+          </div>
+          <div class="step dashboard">
+            <span class="n">Step 6</span>
+            <div class="page">Dashboard</div>
+            <div class="route">/app</div>
+            <div class="action">Hero number ticks. Checklist disappears (all three steps done).</div>
+          </div>
+          <div class="step reports">
+            <span class="n">Step 7</span>
+            <div class="page">Reports</div>
+            <div class="route">/app/reports</div>
+            <div class="action">First data points appear. Range defaults to current month.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Journey 2: Daily operations -->
+      <div class="journey">
+        <div class="journey-head">
+          <div>
+            <h3>2. Daily operations — placing sales</h3>
+            <p class="journey-desc">
+              The most-trodden path. Open the app, see today's pulse, take orders.
+              Each sale supports a 5-second Undo via the toast.
+            </p>
+          </div>
+          <div class="meta"><span class="chip">repeated</span></div>
+        </div>
+        <div class="steps">
+          <div class="step auth">
+            <span class="n">Step 1</span>
+            <div class="page">Sign in</div>
+            <div class="route">/</div>
+            <div class="action">Cosmetic sign in.</div>
+          </div>
+          <div class="step dashboard">
+            <span class="n">Step 2</span>
+            <div class="page">Dashboard</div>
+            <div class="route">/app</div>
+            <div class="action">Glance: orders today, revenue today, delta vs yesterday.</div>
+          </div>
+          <div class="step orders">
+            <span class="n">Step 3</span>
+            <div class="page">Orders</div>
+            <div class="route">/app/orders</div>
+            <div class="action">Click product card → <strong>Enter</strong> to +1, <strong>rShift</strong> to −1. Cart sticks to viewport on desktop.</div>
+          </div>
+          <div class="step orders">
+            <span class="n">Step 4</span>
+            <div class="page">Orders → submit</div>
+            <div class="route">/app/orders</div>
+            <div class="action">Click <strong>Submit order</strong>. Toast appears with 5-second Undo countdown. Cart clears.</div>
+          </div>
+          <div class="step orders">
+            <span class="n">Step 5 (optional)</span>
+            <div class="page">Orders → Undo</div>
+            <div class="route">/app/orders</div>
+            <div class="action">Click <strong>Undo</strong> within 5s. Order voids, stock restores, toast morphs to "voided".</div>
+          </div>
+          <div class="step orders">
+            <span class="n">Loop</span>
+            <div class="page">Repeat</div>
+            <div class="route">/app/orders</div>
+            <div class="action">Continue taking orders. Order history expands inline via the toggle.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Journey 3: Restock from low-stock alert -->
+      <div class="journey">
+        <div class="journey-head">
+          <div>
+            <h3>3. Restock from low-stock alert</h3>
+            <p class="journey-desc">
+              Triggered when an ingredient drops below its <code>lowStockThreshold</code>.
+              The Dashboard surfaces the warning; one click opens the restock modal.
+            </p>
+          </div>
+          <div class="meta"><span class="chip">reactive</span></div>
+        </div>
+        <div class="steps">
+          <div class="step dashboard">
+            <span class="n">Step 1</span>
+            <div class="page">Dashboard</div>
+            <div class="route">/app</div>
+            <div class="action">"Needs attention" panel shows N low items with a red chip.</div>
+          </div>
+          <div class="step dashboard">
+            <span class="n">Step 2</span>
+            <div class="page">Click low row</div>
+            <div class="route">/app</div>
+            <div class="action">The whole row is a button. Click (or Enter, when focused).</div>
+          </div>
+          <div class="step modal">
+            <span class="n">Step 3</span>
+            <div class="page">Restock modal</div>
+            <div class="route">overlay</div>
+            <div class="action">Modal opens with current stock pre-filled. Enter the new quantity.</div>
+          </div>
+          <div class="step modal">
+            <span class="n">Step 4</span>
+            <div class="page">Update stock</div>
+            <div class="route">PATCH /ingredients/:id</div>
+            <div class="action">Click <strong>Update stock</strong>. Modal closes, Dashboard refreshes, panel may empty.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Journey 4: Edit a product -->
+      <div class="journey">
+        <div class="journey-head">
+          <div>
+            <h3>4. Edit a product</h3>
+            <p class="journey-desc">
+              Two flavors: a fast inline price tweak (no modal), or a full edit (name,
+              price, and recipe rows together).
+            </p>
+          </div>
+          <div class="meta"><span class="chip">two flavors</span></div>
+        </div>
+        <div class="steps">
+          <div class="step products">
+            <span class="n">Inline · 1</span>
+            <div class="page">Products row</div>
+            <div class="route">/app/products</div>
+            <div class="action">Type a new price into the inline input. <strong>Save</strong> button fades in.</div>
+          </div>
+          <div class="step products">
+            <span class="n">Inline · 2</span>
+            <div class="page">Save</div>
+            <div class="route">PATCH /products/:id</div>
+            <div class="action">Click <strong>Save</strong>. aria-live region announces success to screen readers.</div>
+          </div>
+          <div class="step products">
+            <span class="n">Full · 1</span>
+            <div class="page">Pencil icon</div>
+            <div class="route">/app/products</div>
+            <div class="action">Click the edit icon (visible on row hover or keyboard focus).</div>
+          </div>
+          <div class="step modal">
+            <span class="n">Full · 2</span>
+            <div class="page">Edit product modal</div>
+            <div class="route">overlay</div>
+            <div class="action">Modify name, price, or recipe rows. Hairline separates Identity from Recipe.</div>
+          </div>
+          <div class="step modal">
+            <span class="n">Full · 3</span>
+            <div class="page">Save changes</div>
+            <div class="route">PATCH /products/:id</div>
+            <div class="action">Modal closes, table refreshes with new recipe chips.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Journey 5: Export report -->
+      <div class="journey">
+        <div class="journey-head">
+          <div>
+            <h3>5. Export an XLSX report</h3>
+            <p class="journey-desc">
+              Pick a date range (preset or custom), then trigger a download.
+              The Export button is CTA-toned to anchor primacy.
+            </p>
+          </div>
+          <div class="meta"><span class="chip">ad-hoc</span></div>
+        </div>
+        <div class="steps">
+          <div class="step reports">
+            <span class="n">Step 1</span>
+            <div class="page">Reports</div>
+            <div class="route">/app/reports</div>
+            <div class="action">Pick a preset (Today / Week / Month / Last Month / All Time) or set custom From/To.</div>
+          </div>
+          <div class="step reports">
+            <span class="n">Step 2</span>
+            <div class="page">Range badge updates</div>
+            <div class="route">/app/reports</div>
+            <div class="action">"Apr 1 → Apr 30, 2025" chip appears next to the title. KPI cards swap to skeleton during refetch.</div>
+          </div>
+          <div class="step reports">
+            <span class="n">Step 3</span>
+            <div class="page">Export .xlsx</div>
+            <div class="route">GET /reports/export</div>
+            <div class="action">Click the amber <strong>Export .xlsx</strong> button. File downloads with 3 sheets: Summary, Orders, Ingredient Usage.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Journey 6: Log an expense -->
+      <div class="journey">
+        <div class="journey-head">
+          <div>
+            <h3>6. Log an operating expense</h3>
+            <p class="journey-desc">
+              The Expenses tab is a journal — every entry is an explicit input. No
+              defaults carry forward. The amount field shows a "last entered" ghost
+              placeholder per category as a memory aid, but never auto-fills.
+            </p>
+          </div>
+          <div class="meta"><span class="chip">recurring</span><span class="chip">no auto-carry</span></div>
+        </div>
+        <div class="steps">
+          <div class="step expenses">
+            <span class="n">Step 1</span>
+            <div class="page">Expenses</div>
+            <div class="route">/app/expenses</div>
+            <div class="action">Open from sidebar (between Inventory and Reports).</div>
+          </div>
+          <div class="step expenses">
+            <span class="n">Step 2</span>
+            <div class="page">Pick category</div>
+            <div class="route">/app/expenses</div>
+            <div class="action">Choose from the fixed enum (Electricity, Transport, Rent, etc). Date defaults to today.</div>
+          </div>
+          <div class="step expenses">
+            <span class="n">Step 3</span>
+            <div class="page">Enter amount</div>
+            <div class="route">/app/expenses</div>
+            <div class="action">Ghost placeholder shows last entered for this category (e.g. "Last: Rp 175,000"). Type the actual amount.</div>
+          </div>
+          <div class="step expenses">
+            <span class="n">Step 4</span>
+            <div class="page">Add</div>
+            <div class="route">POST /expenses</div>
+            <div class="action">Entry appears in the table below. Range total updates. localStorage remembers the new amount as the next placeholder.</div>
+          </div>
+          <div class="step reports">
+            <span class="n">Step 5</span>
+            <div class="page">Reports (later)</div>
+            <div class="route">/app/reports</div>
+            <div class="action">"Operating expenses" KPI card sums all entries in the active range. Profit/ROI stay gross — no net-profit math in-app.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Journey 7: Guided tour (dev) -->
+      <div class="journey">
+        <div class="journey-head">
+          <div>
+            <h3>7. Guided tour — first-run demo</h3>
+            <p class="journey-desc">
+              Dev-only onboarding. The tour seeds realistic data via real API calls,
+              guiding the viewer through ingredient → product → first sale → reports.
+            </p>
+          </div>
+          <div class="meta"><span class="chip dev">dev only</span><span class="chip">9 steps</span></div>
+        </div>
+        <div class="steps">
+          <div class="step dashboard">
+            <span class="n">Step 1</span>
+            <div class="page">Welcome card</div>
+            <div class="route">/app</div>
+            <div class="action">"Take a quick tour" invitation appears on cold-empty Dashboard. Click <strong>Start tour</strong>.</div>
+          </div>
+          <div class="step inventory">
+            <span class="n">Step 2–4</span>
+            <div class="page">Add ingredients</div>
+            <div class="route">/app/inventory</div>
+            <div class="action">Coffee Beans → Milk → Cup. Each step calls POST /ingredients.</div>
+          </div>
+          <div class="step products">
+            <span class="n">Step 5</span>
+            <div class="page">Create Espresso</div>
+            <div class="route">/app/products</div>
+            <div class="action">Recipe links beans + cup. POST /products.</div>
+          </div>
+          <div class="step orders">
+            <span class="n">Step 6</span>
+            <div class="page">Add to cart</div>
+            <div class="route">/app/orders</div>
+            <div class="action">Tour waits for user-driven +1 on the Espresso card.</div>
+          </div>
+          <div class="step orders">
+            <span class="n">Step 7</span>
+            <div class="page">Submit order</div>
+            <div class="route">/app/orders</div>
+            <div class="action">Tour waits for user-driven Submit. POST /orders.</div>
+          </div>
+          <div class="step orders">
+            <span class="n">Step 8</span>
+            <div class="page">First sale</div>
+            <div class="route">/app/orders</div>
+            <div class="action">Wrap-up card. Tooltip auto-shifts to avoid the progress panel in the bottom-right.</div>
+          </div>
+          <div class="step reports">
+            <span class="n">Step 9</span>
+            <div class="page">Reports</div>
+            <div class="route">/app/reports</div>
+            <div class="action">Final stop. Data populated, charts have content, tour ends.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────────────── Page anatomy ─────────────────── -->
+    <section>
+      <p class="eyebrow">Page anatomy</p>
+      <h2>What each route does, at a glance</h2>
+      <p class="lede" style="margin-bottom: 24px;">
+        For each route: its purpose, the dominant UI elements, the primary CTA, and
+        any hidden affordances (keyboard, auto-save, sticky state).
+      </p>
+
+      <div class="anatomy">
+        <table>
+          <thead>
+            <tr>
+              <th>Page</th>
+              <th>Route</th>
+              <th>Purpose</th>
+              <th>Key UI</th>
+              <th>Primary CTA</th>
+              <th>Hidden affordances</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Sign in / Register</td>
+              <td class="route">/  ·  /register</td>
+              <td>Cosmetic landing. No real auth.</td>
+              <td>Oversized "Crema" wordmark, single-line tagline, email + password.</td>
+              <td>Sign in / Create account</td>
+              <td>Entrance + exit animations to/from /app · show/hide password · dev tools (dev only)</td>
+            </tr>
+            <tr>
+              <td>Dashboard</td>
+              <td class="route">/app</td>
+              <td>Operational pulse for today.</td>
+              <td>Hero orders count (clamp 3.5–6.5rem), 3-card KPI row, "Needs attention" panel.</td>
+              <td>Period toggle · row click → restock</td>
+              <td>Delta vs yesterday (Today only) · Getting Started checklist when empty · DevPanel (dev)</td>
+            </tr>
+            <tr>
+              <td>Orders</td>
+              <td class="route">/app/orders</td>
+              <td>Take customer orders.</td>
+              <td>Menu card grid · sticky cart on desktop · order history (collapsible).</td>
+              <td>Submit order (CTA amber)</td>
+              <td>Click card to activate · <span class="mono">Enter</span> +1 · <span class="mono">rShift</span> −1 · 5s Undo · mobile sticky-bottom bar</td>
+            </tr>
+            <tr>
+              <td>Products</td>
+              <td class="route">/app/products</td>
+              <td>Manage catalog and recipes.</td>
+              <td>Table on desktop / cards on mobile · inline price input · recipe chips.</td>
+              <td>Add product / Save (when dirty)</td>
+              <td>Edit/Delete icons fade in on row hover or keyboard focus · quick-add ingredient inside modal</td>
+            </tr>
+            <tr>
+              <td>Inventory</td>
+              <td class="route">/app/inventory</td>
+              <td>Stock and pricing per ingredient.</td>
+              <td>Table on desktop / cards on mobile · low-stock rows tinted.</td>
+              <td>Add ingredient / Save (when dirty)</td>
+              <td><strong>Stock auto-saves on blur</strong> · cost &amp; threshold pend until Save · aria-live announces saves</td>
+            </tr>
+            <tr>
+              <td>Expenses</td>
+              <td class="route">/app/expenses</td>
+              <td>Journal of operating costs (electricity, transport, rent, etc).</td>
+              <td>Compact add-entry form on top · filter row · table on desktop / cards on mobile · range total.</td>
+              <td>Add (CTA amber) / Save in edit modal</td>
+              <td><strong>No defaults · no auto-carry</strong> — every entry is explicit · last-amount ghost placeholder per category from <span class="mono">localStorage</span> · fixed enum (10 categories incl. Miscellaneous)</td>
+            </tr>
+            <tr>
+              <td>Reports</td>
+              <td class="route">/app/reports</td>
+              <td>Financial &amp; product analysis.</td>
+              <td>5 KPI cards (incl. read-only Operating expenses) · sales line chart · product mix donut · ingredient table.</td>
+              <td>Export .xlsx (CTA amber)</td>
+              <td>URL persists range (<span class="mono">?from=&amp;to=</span>) · per-card refetch skeletons · accessible SR table fallbacks for charts · Profit/ROI stay <em>gross</em> (no net-profit math in-app)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ─────────────────── Tokens reference ─────────────────── -->
+    <section>
+      <p class="eyebrow">Design tokens</p>
+      <h2>Color, type, and motion that hold the app together</h2>
+      <p class="lede" style="margin-bottom: 24px;">
+        Quick reference. Defined in <code>frontend/src/index.css</code> as CSS variables
+        and mapped into Tailwind utilities via <code>tailwind.config.js</code>.
+      </p>
+
+      <h3 style="margin-bottom: 12px;">Color</h3>
+      <div class="tokens-grid">
+        <div class="swatch">
+          <span class="chip" style="background: rgb(242 237 227);"></span>
+          <div class="info">
+            <div class="name">--bg-page</div>
+            <div class="hex">#F2EDE3</div>
+            <div class="note">Warm parchment surface</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <span class="chip" style="background: rgb(238 233 223);"></span>
+          <div class="info">
+            <div class="name">--bg-elevated</div>
+            <div class="hex">#EEE9DF</div>
+            <div class="note">Subtle elevated fills</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <span class="chip" style="background: rgb(38 38 36);"></span>
+          <div class="info">
+            <div class="name">--ink-primary</div>
+            <div class="hex">#262624</div>
+            <div class="note">Warm charcoal · headings &amp; body</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <span class="chip" style="background: rgb(163 100 62);"></span>
+          <div class="info">
+            <div class="name">--accent</div>
+            <div class="hex">#A3643E</div>
+            <div class="note">Caramel macchiato · brand</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <span class="chip" style="background: rgb(180 83 9);"></span>
+          <div class="info">
+            <div class="name">--cta</div>
+            <div class="hex">#B45309</div>
+            <div class="note">Warm amber · highest-emphasis actions</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <span class="chip" style="background: rgb(56 142 96);"></span>
+          <div class="info">
+            <div class="name">--success</div>
+            <div class="hex">#388E60</div>
+            <div class="note">Confirms · saved · positive deltas</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <span class="chip" style="background: rgb(220 38 38);"></span>
+          <div class="info">
+            <div class="name">--danger</div>
+            <div class="hex">#DC2626</div>
+            <div class="note">Shortages · destructive · negative deltas</div>
+          </div>
+        </div>
+      </div>
+
+      <h3 style="margin: 28px 0 12px;">Typography</h3>
+      <div class="type-samples">
+        <div class="type-sample">
+          <div class="label">Display · Instrument Serif</div>
+          <div class="show" style="font-family: var(--font-heading); font-size: 3rem; line-height: 1; letter-spacing: -0.02em;">Crema</div>
+        </div>
+        <div class="type-sample">
+          <div class="label">Heading · Instrument Serif</div>
+          <div class="show" style="font-family: var(--font-heading); font-size: 1.5rem; line-height: 1.1;">Take an order</div>
+        </div>
+        <div class="type-sample">
+          <div class="label">Body · Plus Jakarta Sans</div>
+          <div class="show" style="font-size: 0.9375rem;">The cart sticks while you scroll the menu.</div>
+        </div>
+        <div class="type-sample">
+          <div class="label">Mono · JetBrains Mono</div>
+          <div class="show" style="font-family: var(--font-mono); font-size: 0.875rem; letter-spacing: 0.05em;">RP 25.000</div>
+        </div>
+      </div>
+
+      <h3 style="margin: 28px 0 12px;">Motion principles</h3>
+      <div class="two-col">
+        <div class="card">
+          <p class="eyebrow" style="margin-bottom: 6px;">Hover</p>
+          <p style="margin: 0; font-size: 0.9375rem; color: var(--ink-secondary);">
+            Color &amp; shadow only — never transform. Cards lift via shadow change; icon
+            buttons brighten via color. Neighbors never reflow on hover.
+          </p>
+        </div>
+        <div class="card">
+          <p class="eyebrow" style="margin-bottom: 6px;">Duration scale</p>
+          <p style="margin: 0; font-size: 0.9375rem; color: var(--ink-secondary);">
+            150–180 ms for color/bg, 200–300 ms for layout (cart collapse, sidebar
+            width), 400–520 ms for shell-level entrance/exit animations.
+          </p>
+        </div>
+        <div class="card">
+          <p class="eyebrow" style="margin-bottom: 6px;">Reduced motion</p>
+          <p style="margin: 0; font-size: 0.9375rem; color: var(--ink-secondary);">
+            <code>prefers-reduced-motion: reduce</code> suppresses every custom animation
+            utility we ship (entrance cascades, skeleton shimmer, tour pulse, spinner).
+            The UI goes still without breaking layout.
+          </p>
+        </div>
+        <div class="card">
+          <p class="eyebrow" style="margin-bottom: 6px;">Touch targets</p>
+          <p style="margin: 0; font-size: 0.9375rem; color: var(--ink-secondary);">
+            Every icon-only button has a ≥44 × 44 px hit area via the
+            <code>.hit-target</code> utility (invisible pseudo-element). Visual size is
+            free to be smaller for table density.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <span class="mono">crema · user flow map · v1</span>
+    </footer>
+  </div>
+</body>
+</html>
