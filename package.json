@@ -1,0 +1,23 @@
+{
+  "name": "crema",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Crema — minimal F&B ERP. Root scripts for one-command setup and dev.",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "install:all": "npm install --prefix backend && npm install --prefix frontend",
+    "db:setup": "npm run --prefix backend prisma:migrate && npm run --prefix backend seed",
+    "env:init": "node -e \"const fs=require('fs');const src='backend/.env.example';const dst='backend/.env';if(!fs.existsSync(dst)){fs.copyFileSync(src,dst);console.log('Created backend/.env from .env.example — edit DATABASE_URL if your Postgres user differs.')}else{console.log('backend/.env already exists, leaving it alone.')}\"",
+    "setup": "npm run env:init && npm run install:all && npm run db:setup",
+    "dev": "concurrently --kill-others-on-fail --names backend,frontend --prefix-colors yellow,cyan \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
+    "dev:backend": "npm run dev --prefix backend",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "build": "npm run build --prefix frontend",
+    "start": "npm run start --prefix backend"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}

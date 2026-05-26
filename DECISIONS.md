@@ -236,6 +236,8 @@ Small, sensible defaults made without blocking. Reverse any of these if you have
   - **Done** → no onboarding chrome at all; just the pulse hero and the rest of the dashboard.
   - The previous standalone Tour invitation card and Getting Started panel are gone — both absorbed into the WelcomeHero. Tour dismiss/start still uses `localStorage['crema.tour-dismissed']` so a dev user's choice persists across reloads. `data-tour="dashboard-pulse"` is preserved on whichever hero variant renders. Spec updated in `CLAUDE.md` Onboarding + Onboarding tour sections.
 
+- **Root `package.json` for one-command setup + dev.** Added a top-level `package.json` (not a workspaces config — each subdir still owns its own `node_modules`) with `concurrently` as the only dev dep. New scripts: `setup` (env init + install both subdirs + migrate + seed), `dev` (runs both servers in one terminal with colored prefixes), plus granular `install:all`, `db:setup`, `env:init`, `dev:backend`, `dev:frontend`. `engines.node = ">=20"` added to root, backend, and frontend so old-Node installs fail loud instead of with cryptic syntax errors. `backend/.env.example` rewritten with platform-specific guidance for picking the right `DATABASE_URL`. `README.md` quickstart collapsed from a multi-step `cd backend && ... ; cd frontend && ...` dance into two commands at the repo root. Does not violate the CLAUDE.md "no Docker, no CI" hard constraint — this is dev-loop ergonomics, not orchestration.
+
 ## Future ideas (NOT in scope for v1)
 
 - Per-ingredient low-stock thresholds (different floor for cups vs. milk).
